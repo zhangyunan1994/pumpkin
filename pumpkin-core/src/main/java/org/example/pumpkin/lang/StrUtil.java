@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import org.example.pumpkin.Preconditions;
 
 public class StrUtil {
@@ -59,6 +58,188 @@ public class StrUtil {
 
   public static boolean isNotEmpty(CharSequence cs) {
     return !isNullOrEmpty(cs);
+  }
+
+  public static String firstNonBlank(String param1, String param2) {
+    if (hasText(param1)) {
+      return param1;
+    }
+    return param2;
+  }
+
+  public static String firstNonBlank(String param1, String param2, String param3) {
+    if (hasText(param1)) {
+      return param1;
+    } else if (hasText(param2)) {
+      return param2;
+    }
+    return param3;
+  }
+
+  public static String firstNonBlank(String... params) {
+    for (String param : params) {
+      if (hasText(param)) {
+        return param;
+      }
+    }
+    return null;
+  }
+
+  public static String firstNonNull(String param1, String param2) {
+    if (null != param1) {
+      return param1;
+    }
+    return param2;
+  }
+
+  public static String firstNonNull(String param1, String param2, String param3) {
+    if (null != param1) {
+      return param1;
+    } else if (null != param2) {
+      return param2;
+    }
+    return param3;
+  }
+
+  public static String firstNonNull(String... params) {
+    for (String param : params) {
+      if (null != param) {
+        return param;
+      }
+    }
+    return null;
+  }
+
+  public static boolean startsWith(String string, String prefix) {
+    Preconditions.checkNotNull(string);
+    Preconditions.checkNotNull(prefix);
+    if (string.length() < prefix.length()) {
+      return false;
+    }
+    return string.startsWith(prefix);
+  }
+
+
+  public static boolean isNullOrEmpty(String string) {
+    return string == null || string.isEmpty();
+  }
+
+  public static boolean hasText(String string) {
+    return !isBlank(string);
+  }
+
+  public static boolean hasLength(String string) {
+    return !isNullOrEmpty(string);
+  }
+
+  public static String nullToEmpty(String string) {
+    return (string == null) ? "" : string;
+  }
+
+  public static String emptyToNull(String string) {
+    return isNullOrEmpty(string) ? null : string;
+  }
+
+  public static String blankToNull(String string) {
+    return blankToOther(string, null);
+  }
+
+  public static String emptyToOther(String source, String defaultValue) {
+    return isNullOrEmpty(source) ? defaultValue : source;
+  }
+
+  public static String blankToOther(String source, String defaultValue) {
+    return isBlank(source) ? defaultValue : source;
+  }
+
+  public static String padStart(String string, int minLength, char padChar) {
+    Preconditions.checkNotNull(string);
+    if (string.length() >= minLength) {
+      return string;
+    }
+    StringBuilder sb = new StringBuilder(minLength);
+    for (int i = string.length(); i < minLength; i++) {
+      sb.append(padChar);
+    }
+    sb.append(string);
+    return sb.toString();
+  }
+
+  public static String padEnd(String string, int minLength, char padChar) {
+    Preconditions.checkNotNull(string);
+    if (string.length() >= minLength) {
+      return string;
+    }
+    StringBuilder sb = new StringBuilder(minLength);
+    sb.append(string);
+    for (int i = string.length(); i < minLength; i++) {
+      sb.append(padChar);
+    }
+    return sb.toString();
+  }
+
+  public static String repeat(String string, int count) {
+    Preconditions.checkNotNull(string);
+
+    if (count <= 1) {
+      Preconditions.checkArgument(count >= 0, "invalid count: %s", count);
+      return (count == 0) ? "" : string;
+    }
+
+    // IF YOU MODIFY THE CODE HERE, you must update StringsRepeatBenchmark
+    final int len = string.length();
+    final long longSize = (long) len * (long) count;
+    final int size = (int) longSize;
+    if (size != longSize) {
+      throw new ArrayIndexOutOfBoundsException("Required array size too large: " + longSize);
+    }
+
+    final char[] array = new char[size];
+    string.getChars(0, len, array, 0);
+    int n;
+    for (n = len; n < size - n; n <<= 1) {
+      System.arraycopy(array, 0, array, n, n);
+    }
+    System.arraycopy(array, 0, array, n, size - n);
+    return new String(array);
+  }
+
+  public static String commonPrefix(CharSequence a, CharSequence b) {
+    Preconditions.checkNotNull(a);
+    Preconditions.checkNotNull(b);
+
+    int maxPrefixLength = Math.min(a.length(), b.length());
+    int p = 0;
+    while (p < maxPrefixLength && a.charAt(p) == b.charAt(p)) {
+      p++;
+    }
+    if (validSurrogatePairAt(a, p - 1) || validSurrogatePairAt(b, p - 1)) {
+      p--;
+    }
+    return a.subSequence(0, p).toString();
+  }
+
+  public static String commonSuffix(CharSequence a, CharSequence b) {
+    Preconditions.checkNotNull(a);
+    Preconditions.checkNotNull(b);
+
+    int maxSuffixLength = Math.min(a.length(), b.length());
+    int s = 0;
+    while (s < maxSuffixLength && a.charAt(a.length() - s - 1) == b.charAt(b.length() - s - 1)) {
+      s++;
+    }
+    if (validSurrogatePairAt(a, a.length() - s - 1)
+        || validSurrogatePairAt(b, b.length() - s - 1)) {
+      s--;
+    }
+    return a.subSequence(a.length() - s, a.length()).toString();
+  }
+
+  static boolean validSurrogatePairAt(CharSequence string, int index) {
+    return index >= 0
+        && index <= (string.length() - 2)
+        && Character.isHighSurrogate(string.charAt(index))
+        && Character.isLowSurrogate(string.charAt(index + 1));
   }
 
 
@@ -478,11 +659,6 @@ public class StrUtil {
   public static String removeSpaces(final String value) {
     Preconditions.checkNotNull(value, NULL_STRING_ERR_MSG);
     return value.replaceAll("\\s", "");
-  }
-
-  public static String repeat(final String value, final int multiplier) {
-    Preconditions.checkNotNull(value, NULL_STRING_ERR_MSG);
-    return Stream.generate(() -> value).limit(multiplier).collect(joining());
   }
 
   public static String replace(final String value, final String search, final String newValue,
