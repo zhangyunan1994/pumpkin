@@ -2,12 +2,44 @@
 package org.example.pumpkin.collect;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import org.example.pumpkin.Preconditions;
 
 
 public final class CollectionsUtil {
 
   private CollectionsUtil() {
+  }
+
+  public static boolean isNotEmpty(Collection coll) {
+    return !isEmpty(coll);
+  }
+
+  public static boolean isNotEmpty(Map map) {
+    return !isEmpty(map);
+  }
+
+  public static boolean isEmpty(Collection coll) {
+    return coll == null || coll.isEmpty();
+  }
+
+  public static boolean isEmpty(Map map) {
+    return map == null || map.isEmpty();
+  }
+
+  public static <T> T getFirstElseNull(List<T> params) {
+    if (isEmpty(params)) {
+      return null;
+    }
+    return params.get(0);
+  }
+
+  public static <T> T getLastElseNull(List<T> params) {
+    if (isEmpty(params)) {
+      return null;
+    }
+    return params.get(params.size() - 1);
   }
 
   static boolean safeContains(Collection<?> collection, Object object) {
