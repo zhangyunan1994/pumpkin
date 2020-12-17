@@ -45,7 +45,6 @@
  * <h3>Other</h3>
  *
  * <ul>
- *   <li>{@link org.example.pumpkin.common.base.Defaults}
  *   <li>{@link org.example.pumpkin.common.base.Enums}
  *   <li>{@link org.example.pumpkin.common.base.Objects}
  *   <li>{@link org.example.pumpkin.common.base.Optional}

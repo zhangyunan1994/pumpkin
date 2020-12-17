@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
-import org.example.pumpkin.Preconditions;
+import org.example.pumpkin.common.base.Preconditions;
 
 public class StrUtil {
 

@@ -16,7 +16,8 @@ package org.example.pumpkin.common.base;
 
 import static org.example.pumpkin.common.base.Strings.lenientFormat;
 
-import org.example.pumpkin.common.annotations.GwtCompatible;
+import java.util.function.Predicate;
+
 
 
 
@@ -86,8 +87,35 @@ import org.example.pumpkin.common.annotations.GwtCompatible;
  *
  * @since 17.0
  */
-@GwtCompatible
 public final class Verify {
+
+  /**
+   * Validate.
+   *
+   * @param <T>       the type parameter
+   * @param value     the value
+   * @param predicate the predicate
+   */
+  public static <T> void validate(T value, java.util.function.Predicate<T> predicate) {
+    if (!predicate.test(value)) {
+      throw new VerifyException();
+    }
+  }
+
+  /**
+   * Validate.
+   *
+   * @param <T>          the type parameter
+   * @param value        the value
+   * @param predicate    the predicate
+   * @param errorMessage the error message
+   */
+  public static <T> void validate(T value, Predicate<T> predicate, String errorMessage) {
+    if (!predicate.test(value)) {
+      throw new VerifyException(errorMessage);
+    }
+  }
+
   /**
    * Ensures that {@code expression} is {@code true}, throwing a {@code VerifyException} with no
    * message otherwise.
@@ -492,7 +520,6 @@ public final class Verify {
    * @throws VerifyException if {@code reference} is {@code null}
    * @see Preconditions#checkNotNull Preconditions.checkNotNull()
    */
-
   public static <T> T verifyNotNull(
        T reference,
        String errorMessageTemplate,
@@ -500,9 +527,6 @@ public final class Verify {
     verify(reference != null, errorMessageTemplate, errorMessageArgs);
     return reference;
   }
-
-  // TODO(kevinb): consider <T> T verifySingleton(Iterable<T>) to take over for
-  // Iterables.getOnlyElement()
 
   private Verify() {}
 }

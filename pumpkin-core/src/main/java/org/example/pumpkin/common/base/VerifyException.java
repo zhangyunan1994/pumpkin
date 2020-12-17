@@ -14,41 +14,40 @@
 
 package org.example.pumpkin.common.base;
 
-import org.example.pumpkin.common.annotations.GwtCompatible;
-
 
 /**
- * Exception thrown upon the failure of a <a
- * href="https://github.com/google/guava/wiki/ConditionalFailuresExplained">verification check</a>,
- * including those performed by the convenience methods of the {@link Verify} class.
- *
- * @since 17.0
+ * The type Verify exception.
  */
-@GwtCompatible
 public class VerifyException extends RuntimeException {
-  /** Constructs a {@code VerifyException} with no message. */
+
+  /**
+   * Instantiates a new Verify exception.
+   */
   public VerifyException() {}
 
-  /** Constructs a {@code VerifyException} with the message {@code message}. */
+  /**
+   * Instantiates a new Verify exception.
+   *
+   * @param message the message
+   */
   public VerifyException( String message) {
     super(message);
   }
 
   /**
-   * Constructs a {@code VerifyException} with the cause {@code cause} and a message that is {@code
-   * null} if {@code cause} is null, and {@code cause.toString()} otherwise.
+   * Instantiates a new Verify exception.
    *
-   * @since 19.0
+   * @param cause the cause
    */
   public VerifyException( Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs a {@code VerifyException} with the message {@code message} and the cause {@code
-   * cause}.
+   * Instantiates a new Verify exception.
    *
-   * @since 19.0
+   * @param message the message
+   * @param cause   the cause
    */
   public VerifyException( String message,  Throwable cause) {
     super(message, cause);
